@@ -2,18 +2,23 @@ import React from "react"
 import { Button } from "../button"
 import { FormItem } from "../form-item"
 
+
 export class DataGridClsComponent extends React.Component {
 
   state = {
     loading: false,
     items: [],
-    todo: null
+    todo: null,
+    // orderId: "asc",
+    // orderTitle: "asc",
+    // orderCompleted: "asc"
   }
 
   componentDidMount() {
     this.loadData();
   }
 
+ 
   loadData = () => {
     this.setState({ loading: true })
     fetch("https://jsonplaceholder.typicode.com/todos")
@@ -52,7 +57,10 @@ export class DataGridClsComponent extends React.Component {
         <table className="table">
           <thead>
             <tr>
-              <th scope="col">#</th>
+            {/* <th onClick={() => this.sortingId()} scope="col" style={{cursor: 'pointer'}}>Id</th>
+            <th onClick={() => this.sortingTitle()} scope="col" style={{cursor: 'pointer'}}>Başlık</th>
+            <th onClick={() => this.sortingCompleted() } scope="col" style={{cursor: 'pointer'}}>Durum</th> */}
+              <th scope="col">Id</th>
               <th scope="col">Başlık</th>
               <th scope="col">Durum</th>
               <th scope="col">Aksiyonlar</th>
@@ -61,10 +69,49 @@ export class DataGridClsComponent extends React.Component {
           <tbody>
             {this.renderBody()}
           </tbody>
+          
         </table>
     </>
     )
   }
+
+  // sortingId = (col) => {
+  //   if(this.state.orderId === "asc"){
+  //     const sorted = [...items].sort((a, b) => (a.id > b.id ? -1 : 1))
+  //     this.setState({items, orderId:"desc"})
+  //     this.state.items(sorted);
+  //   }else{
+  //     const sorted = [...items].sort((a, b) => (a.id > b.id ? 1 : -1))
+  //     this.setState({items, orderId:"asc"})
+  //     this.state.items(sorted);
+  //   }
+  // }
+
+  // sortingTitle = (col) => {
+  //   if(this.state.orderTitle === "asc"){
+  //     const sorted = [...items].sort((a, b) => (a.title > b.title ? -1 : 1))
+  //     this.setState({items, orderTitle:"desc"})
+  //     this.state.items(sorted);
+  //   }else{
+  //     const sorted = [...items].sort((a, b) => (a.title > b.title ? 1 : -1))
+  //     this.setState({items, orderTitle:"asc"})
+  //     this.state.items(sorted);
+  //   }
+  // }
+
+  // sortingCompleted = (col) => {
+    
+  //   if(this.state.orderCompleted === "asc"){
+  //     const sorted = [...items].sort((a, b) => (a.completed > b.completed ? -1 : 1))
+  //     this.setState({items, orderCompleted:"desc"})
+  //     this.state.items(sorted);
+  //   }else{
+  //     const sorted = [...items].sort((a, b) => (a.completed > b.completed ? 1 : -1))
+  //     this.setState({items, orderCompleted:"asc"})
+  //     this.state.items(sorted);
+  //   }
+  // }
+  
 
   saveChanges = () => {
     // insert

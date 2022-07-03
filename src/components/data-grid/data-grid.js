@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react"
 import { Button } from "../button"
 import { FormItem } from "../form-item"
+import {Pagination} from "../pagination/pagination"
+
 
 export function DataGrid() {
 
@@ -9,9 +11,28 @@ export function DataGrid() {
 
   const [todo, setTodo] = useState(null)
 
+  //Sayfalama işlemi için state kullanımı
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemsPerPage] = useState(25)
+
+
+  //Sıralama işlemi için state kullanımı
+  const [orderId, setOrderId] = useState("asc")
+  const [orderTitle, setOrderTitle] = useState("asc")
+  const [orderCompleted, setOrderCompleted] = useState("asc")
+
+
   useEffect(() => {
     loadData()
-  }, [])
+  }, [itemsPerPage, setItemsPerPage])
+  
+  
+  const indexofLastItems = currentPage * itemsPerPage
+  const indexOfFirstItems = indexofLastItems - itemsPerPage
+  const currentItems = items.slice(indexOfFirstItems, indexofLastItems)
+  const totalPagesNum = Math.ceil(items.length/itemsPerPage)
+
+
 
   const loadData = () => {
     setLoading(true)
@@ -29,7 +50,7 @@ export function DataGrid() {
   const renderBody = () => {
     return (
       <React.Fragment>
-        {items.sort((a, b) => b.id - a.id).map((item, i) => {
+        {currentItems.sort((a, b) => b.id - a.id).map((item, i) => {
           return (
             <tr key={i}>
               <th scope="row" >{item.id}</th>
@@ -53,18 +74,56 @@ export function DataGrid() {
       <table className="table">
         <thead>
           <tr>
-            <th scope="col">#</th>
-            <th scope="col">Başlık</th>
-            <th scope="col">Durum</th>
+            <th onClick={() => sortingId(items.id)} scope="col" style={{cursor: 'pointer'}}>Id</th>
+            <th onClick={() => sortingTitle(items.title)} scope="col" style={{cursor: 'pointer'}}>Başlık</th>
+            <th onClick={() => sortingCompleted(items.completed) }scope="col" style={{cursor: 'pointer'}}>Durum</th>
             <th scope="col">Aksiyonlar</th>
           </tr>
         </thead>
         <tbody>
           {renderBody()}
         </tbody>
+            <Pagination pages={totalPagesNum} setCurrentPage ={setCurrentPage}/>
       </table>
     </>
     )
+  }
+ 
+  //Sıralama
+   const sortingId = (col) => {
+    if(orderId === "asc"){
+      const sorted = [...items].sort((a, b) => (a.id > b.id ? -1 : 1))
+      setOrderId("desc");
+      setItems(sorted);
+    }else{
+      const sorted = [...items].sort((a, b) => (a.id > b.id ? 1 : -1))
+      setOrderId("asc");
+      setItems(sorted);
+    }
+  }
+
+  const sortingTitle = (col) => {
+    if(orderTitle === "asc"){
+      const sorted = [...items].sort((a, b) => (a.title > b.title ? -1 : 1))
+      setOrderTitle("desc");
+      setItems(sorted);
+    }else{
+      const sorted = [...items].sort((a, b) => (a.title > b.title ? 1 : -1))
+      setOrderTitle("asc");
+      setItems(sorted);
+    }
+  }
+
+  const sortingCompleted = (col) => {
+    if(orderCompleted === "asc"){
+      const sorted = [...items].sort((a, b) => (a.completed > b.completed ? -1 : 1))
+      setOrderCompleted("desc");
+      setItems(sorted);
+    }else{
+      const sorted = [...items].sort((a, b) => (a.completed > b.completed ? 1 : -1))
+      setOrderCompleted("asc");
+      setItems(sorted);
+    }
   }
 
   const saveChanges = () => {
